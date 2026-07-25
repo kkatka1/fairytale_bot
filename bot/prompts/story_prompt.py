@@ -1,9 +1,9 @@
-from bot.prompts.base_rules import BASE_RULES
-from bot.prompts.safety_rules import SAFETY_RULES
-from bot.prompts.memory_rules import MEMORY_RULES
-from bot.prompts.story_rules import STORY_RULES
-from bot.prompts.immersion_rules import IMMERSION_RULES
 from bot.prompts.age_groups import get_age_rules
+from bot.prompts.base_rules import BASE_RULES
+from bot.prompts.immersion_rules import IMMERSION_RULES
+from bot.prompts.memory_rules import MEMORY_RULES
+from bot.prompts.safety_rules import SAFETY_RULES
+from bot.prompts.story_rules import STORY_RULES
 from bot.prompts.styles import get_style_rules
 
 

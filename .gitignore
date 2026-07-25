@@ -177,3 +177,6 @@ pyrightconfig.json
 .continue/
 config.yaml
 
+# Local AI tests
+test_*.py
+list_models.py

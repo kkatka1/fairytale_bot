@@ -9,6 +9,8 @@ from aiogram.enums import ParseMode
 from bot.config import BOT_TOKEN
 from bot.handlers import router
 
+logger = logging.getLogger(__name__)
+
 
 async def main() -> None:
     # Настраиваем логирование
@@ -25,13 +27,15 @@ async def main() -> None:
         token=BOT_TOKEN,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
     )
+
     dp = Dispatcher()
 
     # Подключаем роутер с обработчиками
     dp.include_router(router)
 
     # Запускаем polling
-    logging.info("Запуск бота...")
+    logger.info("Запуск бота...")
+
     await dp.start_polling(bot)
 
 
@@ -39,4 +43,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(main())
     except (KeyboardInterrupt, SystemExit):
-        logging.info("Бот остановлен!")
+        logger.info("Бот остановлен!")

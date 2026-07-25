@@ -1,5 +1,6 @@
 from aiogram.fsm.state import State, StatesGroup
 
+
 class StoryForm(StatesGroup):
     """
     Состояния FSM для создания сказки

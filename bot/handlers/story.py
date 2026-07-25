@@ -1,9 +1,9 @@
-from aiogram import Router, F
+from aiogram import F, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 
-from bot.states import StoryForm
 from bot.services.llm import generate_story
+from bot.states import StoryForm
 
 router = Router()
 
@@ -68,7 +68,10 @@ async def create_story_handler(callback: CallbackQuery, state: FSMContext) -> No
         for chunk in chunks:
             await callback.message.answer(chunk)
 
-    except Exception as e:
+    except Exception as e: #noqa: BLE001
+        await callback.message.answer(
+            "Не удалось создать сказку. Попробуйте позже."
+        )
         print(f"Ошибка генерации сказки: {e}")
 
         await callback.message.answer(

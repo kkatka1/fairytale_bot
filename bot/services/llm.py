@@ -1,4 +1,5 @@
 from google import genai
+
 from bot.config import GEMINI_API_KEY
 from bot.prompts.story_prompt import build_story_prompt
 
