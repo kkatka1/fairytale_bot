@@ -3,25 +3,32 @@ from google import genai
 from bot.config import GEMINI_API_KEY
 from bot.prompts.story_prompt import build_story_prompt
 
-# Инициализация клиента Gemini API через официальный SDK google-genai
+
 client = genai.Client(api_key=GEMINI_API_KEY)
 
-# Используем актуальную модель
-MODEL_NAME = "gemini-3.5-flash"
+
+PRIMARY_MODEL = "gemini-3.5-flash"
+BACKUP_MODEL = "gemini-3.5-flash-lite"
+
 
 async def generate_story(
     child_name: str,
     child_age: str,
     story_theme: str,
     avoid_topics: str = "Не указано",
-    style_key: str = "classic_russian"
+    style_key: str = "classic_russian",
 ) -> str:
     """
-    Публичная функция для генерации сказки:
-    - вызывает только build_story_prompt();
-    - отправляет запрос в Gemini API;
-    - возвращает готовый текст сказки.
+    Генерация персональной сказки через Gemini.
+
+    Основная модель:
+    gemini-3.5-flash
+
+    При временной ошибке Gemini
+    используется запасная модель:
+    gemini-3.5-flash-lite
     """
+
     prompt = build_story_prompt(
         child_name=child_name,
         child_age=child_age,
@@ -30,12 +37,29 @@ async def generate_story(
         style_key=style_key,
     )
 
-    response = await client.aio.models.generate_content(
-        model=MODEL_NAME,
-        contents=prompt,
-    )
+    models = [
+        PRIMARY_MODEL,
+        BACKUP_MODEL,
+    ]
 
-    if response and response.text:
-        return response.text.strip()
-    
-    raise ValueError("Не удалось получить текст сказки от Gemini API.")
+    last_error = None
+
+    for model in models:
+        try:
+            response = await client.aio.models.generate_content(
+                model=model,
+                contents=prompt,
+            )
+
+            if response and response.text:
+                return response.text.strip()
+
+        except Exception as error:
+            last_error = error
+            print(
+                f"Ошибка модели {model}: {error}"
+            )
+
+    raise RuntimeError(
+        f"Gemini не смог создать сказку: {last_error}"
+    )
